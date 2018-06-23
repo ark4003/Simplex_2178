@@ -17,6 +17,34 @@ void MyMesh::GenerateCircle(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 		then call the AddTri function to generate a_nSubdivision number of faces
 	*/
 
+	std::vector<vector3> circlePoints;
+	vector3 center(0.0f, 0.0f, 0.0f);
+	
+	bool starterPoint = true;
+	float theta = 0;
+	for (int i = 0; i < a_nSubdivisions; i++)
+	{
+		theta = ((i* (2 * PI)) / a_nSubdivisions);
+		circlePoints.push_back(vector3((cos(theta)* a_fRadius), (sin(theta)*a_fRadius), 0.0f));
+
+		//after the starting point, draw triangles with previous points as you place them
+		if (starterPoint == true) 
+		{
+			starterPoint = false;
+		}
+		else if (starterPoint == false)
+		{
+			AddTri(circlePoints[i], center,  circlePoints[i - 1]);
+		}
+		else {
+			std::cout << "I don't know how but you messed this up";
+		}
+	}
+
+	//we're missing a triangle, fill that in.
+	AddTri(circlePoints[0], center, circlePoints[a_nSubdivisions - 1]);
+
+
 	// Adding information about color
 	CompleteMesh(a_v3Color);
 	CompileOpenGL3X();
