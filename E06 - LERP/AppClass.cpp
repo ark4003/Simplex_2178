@@ -59,7 +59,22 @@ void Application::Display(void)
 
 
 	//your code goes here
-	v3CurrentPos = vector3(0.0f, 0.0f, 0.0f);
+	//which point you're on
+	int currentPoint = fmod(fTimer, m_stopsList.size());
+
+	//the next point, or rather, the one you're traveling to.
+	int nextPoint = currentPoint + 1;
+	//make sure not to go out of bounds
+	if (currentPoint == (m_stopsList.size() - 1))
+	{
+		nextPoint = 0;
+	}
+
+	//progress from point to point.  Goes from 0 to 1 every second.
+	float travelPercent = fmod(fTimer, 1.0f);
+
+	//over the course of every second, move from one location to the next
+	v3CurrentPos =glm::lerp(m_stopsList[currentPoint], m_stopsList[nextPoint], travelPercent) ;
 	//-------------------
 	
 

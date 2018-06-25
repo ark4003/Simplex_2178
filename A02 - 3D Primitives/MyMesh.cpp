@@ -500,6 +500,8 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 	Init();
 
 	// Replace this with your code
+
+	//Hmmmm, let's try making a ring of circles?  That feels like it should be pretty easy, but how should I get them all in the same direction.....
 	GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
 	// -------------------------------
 
