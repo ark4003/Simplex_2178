@@ -72,6 +72,20 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 	default: break;
 	case sf::Keyboard::Space:
 		break;
+
+		//keypress changes respective axis
+	case sf::Keyboard::X:
+		rotationAxis.x = 0.05f;
+		break;
+	case sf::Keyboard::Y:
+		rotationAxis.y = 0.05f;
+		break;
+	case sf::Keyboard::Z:
+		rotationAxis.z = 0.05f;
+		break;
+	case sf::Keyboard::R:
+		rotationAxis = vector3(0.0f, 0.0f, 0.0f);
+
 	}
 	//gui
 	gui.io.KeysDown[a_event.key.code] = true;
@@ -414,27 +428,31 @@ void Application::ProcessKeyboard(void)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::E))
 		m_pCameraMngr->MoveVertical(fSpeed);
 #pragma endregion
+	
+	//these were giving me issues with making things rotate at hyperspeed with my solution so I had to change what was being used and where the keyboard input was
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
 	{
 		if (fMultiplier)
-			m_v3Rotation.x -= 1.0f;
+			m_v3Rotation.x -= 0.05f;
 		else
-			m_v3Rotation.x += 1.0f;
+			m_v3Rotation.x += 0.05f;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
 	{
 		if (fMultiplier)
-			m_v3Rotation.y -= 1.0f;
+			m_v3Rotation.y -= 0.05f;
 		else
-			m_v3Rotation.y += 1.0f;
+			m_v3Rotation.y += 0.05f;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 	{
 		if (fMultiplier)
-			m_v3Rotation.z -= 1.0f;
+			m_v3Rotation.z -= 0.05f;
 		else
-			m_v3Rotation.z += 1.0f;
+			m_v3Rotation.z += 0.05f;
 	}
+	
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 	{
 		m_v3Rotation = vector3(0.0f);

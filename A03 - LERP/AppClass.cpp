@@ -2,7 +2,7 @@
 void Application::InitVariables(void)
 {
 	//Change this to your name and email
-	m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	m_sProgrammer = "Andrew Knowland - ark4003@g.rit.edu";
 	
 	//Set the position and target of the camera
 	//(I'm at [0,0,10], looking at [0,0,0] and up is the positive Y axis)
@@ -36,6 +36,28 @@ void Application::InitVariables(void)
 	{
 		vector3 v3Color = WaveLengthToRGB(uColor); //calculate color based on wavelength
 		m_shapeList.push_back(m_pMeshMngr->GenerateTorus(fSize, fSize - 0.1f, 3, i, v3Color)); //generate a custom torus and add it to the meshmanager
+
+		//collects a single orbit's stops
+		std::vector <vector3> stopPoints;
+
+		//used to find the position for each point
+		float theta = 0;
+
+		//j is the current point.  Since I is the number of sides for the current shape, J will only go up to I
+		for (int j = 0; j < i; j++)
+		{
+			//angle of theta.  uses modifed code from AO2
+			theta = ((j* (2 * PI)) / i);
+
+			//modified AO2 code.  Puts stops in stopPoints
+			stopPoints.push_back(vector3( (cos(theta)*fSize), (sin(theta)*fSize), 0));
+		}
+		
+		//take the current set of points and put it in the stopList
+		stopList.push_back(stopPoints);
+
+
+
 		fSize += 0.5f; //increment the size for the next orbit
 		uColor -= static_cast<uint>(decrements); //decrease the wavelength
 	}
@@ -64,14 +86,44 @@ void Application::Display(void)
 	*/
 	//m4Offset = glm::rotate(IDENTITY_M4, 1.5708f, AXIS_Z);
 
+	//create a timer (taken from cude used for E06)
+	static float fTimer = 0;
+	static uint uClock = m_pSystem->GenClock();
+	fTimer += m_pSystem->GetDeltaTime(uClock);
+
+
+
 	// draw a shapes
 	for (uint i = 0; i < m_uOrbits; ++i)
 	{
 		m_pMeshMngr->AddMeshToRenderList(m_shapeList[i], glm::rotate(m4Offset, 1.5708f, AXIS_X));
 
 		//calculate the current position
-		vector3 v3CurrentPos = ZERO_V3;
+		vector3 v3CurrentPos;
+		
+
+		//more modified E06 code
+		//which point you're on.  Increases every time the timer increases by 1, loops around every time it would exceed the number of points.
+		int currentPoint = fmod(fTimer, stopList[i].size());
+
+		//your destination.  if it would exceed the number of points, return to the start.
+		int nextPoint = currentPoint + 1;
+		if (currentPoint == (stopList[i].size() - 1))
+		{
+			nextPoint = 0;
+		}
+
+		//distance traveled between points, ranging from 0 to 1.
+		float travelPercent = fmod(fTimer, 1.0f);
+
+		//move from current point to the next point, once every second.
+		v3CurrentPos = glm::lerp(stopList[i][currentPoint], stopList[i][nextPoint], travelPercent);
+
+
+
+
 		matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
+
 
 		//draw spheres
 		m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);

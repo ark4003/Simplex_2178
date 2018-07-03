@@ -23,6 +23,11 @@ class Application
 	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
 	
 private:
+
+	//collection of orbits which have their own stopping points that are defined in AppClass.CPP
+	std::vector <std::vector<vector3>> stopList;
+
+
 	static ImGuiObject gui; //GUI object
 	
 	uint m_uRenderCallCount = 0; //count of render calls per frame

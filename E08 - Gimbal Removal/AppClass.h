@@ -18,9 +18,14 @@ class Application
 	quaternion m_qOrientation;
 	vector3 m_v3Rotation;
 	MyMesh* m_pMesh = nullptr;
-	String m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	String m_sProgrammer = "Andrew Knowland - ark4003@rit.edu";
 
 private:
+
+	//vector containing axes that are currently being rotated around
+	vector3 rotationAxis;
+
+
 	static ImGuiObject gui; //GUI object
 
 	uint m_uRenderCallCount = 0; //count of render calls per frame
