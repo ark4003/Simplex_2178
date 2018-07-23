@@ -85,8 +85,80 @@ void MyRigidBody::SetModelMatrix(matrix4 a_m4ModelMatrix)
 	m_m4ToWorld = a_m4ModelMatrix;
 	
 	//your code goes here---------------------
-	m_v3MinG = m_v3MinL;
-	m_v3MaxG = m_v3MaxL;
+	//Make the corners of the AARB
+	//I'm SO tempted to call this "AARBy's"
+	//Or AARBox...... wait, that would be redundant
+	std::vector <vector3> aarbCorners;
+
+
+	//front top left (from viewer's perspective, side furthest from viewer)
+	aarbCorners.push_back(vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MinL.z));
+	//front top right
+	aarbCorners.push_back(vector3(m_v3MaxL.x, m_v3MaxL.y, m_v3MinL.z));
+	//front bottom left
+	aarbCorners.push_back(vector3(m_v3MinL.x, m_v3MinL.y, m_v3MinL.z));
+	//front bottom right
+	aarbCorners.push_back(vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MinL.z));
+
+
+	//Rear top left
+	aarbCorners.push_back(vector3(m_v3MinL.x, m_v3MaxL.y, m_v3MaxL.z));
+	//rear top right
+	aarbCorners.push_back(vector3(m_v3MaxL.x, m_v3MaxL.y, m_v3MaxL.z));
+	//rear bottom left
+	aarbCorners.push_back(vector3(m_v3MinL.x, m_v3MinL.y, m_v3MaxL.z));
+	//rear bottom right
+	aarbCorners.push_back(vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MaxL.z));
+
+
+	//make all the points their global equivalents
+	for (int i = 0; i< aarbCorners.size(); i++)
+	{
+		aarbCorners[i] = vector3(m_m4ToWorld * vector4(aarbCorners[i], 1.0f));
+	}
+
+	//get base value of maximum and minimum from first corner.  
+	//Need to use ONE of the points for the starting minimum and maximum, instead of just 0,0,0, as that would cause issues if that point wasn't inside the model
+	m_v3MaxG = aarbCorners[0];
+	m_v3MinG = aarbCorners[0];
+
+	//change the max and minimum values for the global box
+	for (int i = 0; i < aarbCorners.size(); i++)
+	{
+		//Maximum and minimum X
+		if (m_v3MaxG.x < aarbCorners[i].x)
+		{
+			m_v3MaxG.x = aarbCorners[i].x;
+		}
+		if (m_v3MinG.x > aarbCorners[i].x)
+		{
+			m_v3MinG.x = aarbCorners[i].x;
+		}
+
+		//Y
+		if (m_v3MaxG.y < aarbCorners[i].y)
+		{
+			m_v3MaxG.y = aarbCorners[i].y;
+		}
+		if (m_v3MinG.y > aarbCorners[i].y)
+		{
+			m_v3MinG.y = aarbCorners[i].y;
+		}
+
+
+		//Z
+		if (m_v3MaxG.z < aarbCorners[i].z)
+		{
+			m_v3MaxG.z = aarbCorners[i].z;
+		}
+		if (m_v3MinG.z > aarbCorners[i].z)
+		{
+			m_v3MinG.z = aarbCorners[i].z;
+		}
+
+
+	}
+
 	//----------------------------------------
 
 	//we calculate the distance between min and max vectors
