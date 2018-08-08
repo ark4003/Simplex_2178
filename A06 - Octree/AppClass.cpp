@@ -29,11 +29,28 @@ void Application::InitVariables(void)
 			m_pEntityMngr->SetModelMatrix(m4Position);
 		}
 	}
+
 	m_uOctantLevels = 1;
+	m_pRoot = new MyOctant(m_uOctantLevels, 5);
+
 	m_pEntityMngr->Update();
 }
 void Application::Update(void)
+
 {
+	
+	//check collision for all octants in the Octree
+	if (m_uOctantID >= m_pRoot->GetOctantCount())
+	{
+		m_pRoot->TestCollisions();
+	}
+	
+	//test collision for the highlighted octant
+	else
+	{
+		m_pRoot->TestCollisions(m_uOctantID);
+	}
+
 	//Update the system so it knows how much time has passed since the last call
 	m_pSystem->Update();
 
@@ -42,7 +59,7 @@ void Application::Update(void)
 
 	//Is the first person camera active?
 	CameraRotation();
-	
+
 	//Update Entity Manager
 	m_pEntityMngr->Update();
 
@@ -51,24 +68,32 @@ void Application::Update(void)
 }
 void Application::Display(void)
 {
+	
+	if (m_uOctantID >= m_pRoot->GetOctantCount()) {
+		m_uOctantID = -1;
+	}
+
+
+	m_pRoot->Display(m_uOctantID, C_YELLOW);
+
 	// Clear the screen
 	ClearScreen();
 
 	//display octree
-	//m_pRoot->Display();
-	
+	m_pRoot->Display();
+
 	// draw a skybox
 	m_pMeshMngr->AddSkyboxToRenderList();
-	
+
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();
 
 	//clear the render list
 	m_pMeshMngr->ClearRenderList();
-	
+
 	//draw gui,
 	DrawGUI();
-	
+
 	//end the current frame (internally swaps the front and back buffers)
 	m_pWindow->display();
 }

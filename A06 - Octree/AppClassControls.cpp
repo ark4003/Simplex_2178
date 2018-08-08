@@ -8,7 +8,7 @@ void Application::ProcessMouseMovement(sf::Event a_event)
 	sf::Vector2i window = m_pWindow->getPosition();
 	m_v3Mouse.x = static_cast<float>(mouse.x - window.x);
 	m_v3Mouse.y = static_cast<float>(mouse.y - window.y);
-	if(!m_pSystem->IsWindowFullscreen() && !m_pSystem->IsWindowBorderless())
+	if (!m_pSystem->IsWindowFullscreen() && !m_pSystem->IsWindowBorderless())
 		m_v3Mouse += vector3(-8.0f, -32.0f, 0.0f);
 	gui.io.MousePos = ImVec2(m_v3Mouse.x, m_v3Mouse.y);
 }
@@ -79,7 +79,7 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 		m_bModifier = true;
 		break;
 	}
-	
+
 	//gui
 	gui.io.KeysDown[a_event.key.code] = true;
 	gui.io.KeyCtrl = a_event.key.control;
@@ -111,40 +111,46 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 		bFPSControl = !bFPSControl;
 		m_pCameraMngr->SetFPS(bFPSControl);
 		break;
-	case sf::Keyboard::PageUp:
+	case sf::Keyboard::U:
 		++m_uOctantID;
-		/*
-		if (m_uOctantID >= m_pRoot->GetOctantCount())
-			m_uOctantID = - 1;
-		*/
+
+		if (m_uOctantID >= m_pRoot->GetOctantCount()) {
+			m_uOctantID = -1;
+		}
+
 		break;
-	case sf::Keyboard::PageDown:
+	case sf::Keyboard::I:
 		--m_uOctantID;
-		/*
-		if (m_uOctantID >= m_pRoot->GetOctantCount())
-			m_uOctantID = - 1;
-		*/
+
+		if (m_uOctantID >= m_pRoot->GetOctantCount()) {
+			m_uOctantID = -1;
+		}
+
 		break;
-	case sf::Keyboard::Add:
+	case sf::Keyboard::O:
 		if (m_uOctantLevels < 4)
 		{
 			m_pEntityMngr->ClearDimensionSetAll();
 			++m_uOctantLevels;
-			/*
+
 			SafeDelete(m_pRoot);
 			m_pRoot = new MyOctant(m_uOctantLevels, 5);
-			*/
+
+		}
+		if (m_uOctantLevels > 4)
+		{
+			std::cout << "TEST" << std::endl;
 		}
 		break;
-	case sf::Keyboard::Subtract:
+	case sf::Keyboard::P:
 		if (m_uOctantLevels > 0)
 		{
 			m_pEntityMngr->ClearDimensionSetAll();
 			--m_uOctantLevels;
-			/*
+
 			SafeDelete(m_pRoot);
 			m_pRoot = new MyOctant(m_uOctantLevels, 5);
-			*/
+
 		}
 		break;
 	case sf::Keyboard::LShift:

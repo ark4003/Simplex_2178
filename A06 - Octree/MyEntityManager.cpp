@@ -167,20 +167,22 @@ Simplex::MyEntityManager::~MyEntityManager(){Release();};
 // other methods
 void Simplex::MyEntityManager::Update(void)
 {
+	//All this is done in the Octree itself now, no need to have it here.
 	//Clear all collisions
-	for (uint i = 0; i < m_uEntityCount; i++)
-	{
-		m_mEntityArray[i]->ClearCollisionList();
-	}
+	//for (uint i = 0; i < m_uEntityCount; i++)
+	//{
+	//	m_mEntityArray[i]->ClearCollisionList();
+	//}
 
 	//check collisions
-	for (uint i = 0; i < m_uEntityCount - 1; i++)
+	/*for (uint i = 0; i < m_uEntityCount - 1; i++)
 	{
 		for (uint j = i + 1; j < m_uEntityCount; j++)
 		{
 			m_mEntityArray[i]->IsColliding(m_mEntityArray[j]);
 		}
-	}
+	}*/
+
 }
 void Simplex::MyEntityManager::AddEntity(String a_sFileName, String a_sUniqueID)
 {
