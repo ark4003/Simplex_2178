@@ -12,18 +12,48 @@ void Application::InitVariables(void)
 
 	m_pEntityMngr->AddEntity("Minecraft\\Steve.obj", "Steve");
 	m_pEntityMngr->UsePhysicsSolver();
+
+	int sPX = -10;
+	//int sPY = 0;
+	int sPZ = -10;
+	int weird = 0;
+
+	srand((unsigned)time(0));
+
 	
-	for (int i = 0; i < 100; i++)
+	for (int i = 0; i < 500; i++)
 	{
 		m_pEntityMngr->AddEntity("Minecraft\\Cube.obj", "Cube_" + std::to_string(i));
 		vector3 v3Position = vector3(glm::sphericalRand(12.0f));
 		v3Position.y = 0.0f;
-		matrix4 m4Position = glm::translate(v3Position);
-		m_pEntityMngr->SetModelMatrix(m4Position * glm::scale(vector3(2.0f)));
-		m_pEntityMngr->UsePhysicsSolver();
+		//matrix4 m4Position = glm::translate(v3Position);
+
+		//whether or not this tile will be an obstacle
+		float isOb = rand();
+		std::cout << isOb << std::endl;
+
+		//make one tenth of the blocks randomly raised.  These ones are obstacles
+		if (isOb > (RAND_MAX *0.90) && (i != 0)) {
+			matrix4 m4Position = glm::translate(vector3(sPX * 2.1, 0.0f, sPZ * 2.1));
+			m_pEntityMngr->SetModelMatrix(m4Position * glm::scale(vector3(2.0f)));
+		}
+		//The rest of them are lowered beneath the principle actors.
+		else
+		{
+			matrix4 m4Position = glm::translate(vector3(sPX * 2.1, -2.2f, sPZ * 2.1));
+			m_pEntityMngr->SetModelMatrix(m4Position * glm::scale(vector3(2.0f)));
+		}
+		//m_pEntityMngr->UsePhysicsSolver();
 		//m_pEntityMngr->SetMass(2);
 
 		//m_pEntityMngr->SetMass(i+1);
+		sPX++;
+		//sPY++;
+		if (sPX > 15) {
+			sPX = -10;
+			sPZ++;
+		}
+		weird++;
 	}
 }
 void Application::Update(void)
